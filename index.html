@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lakshya Daga — Into the Portfolio-Verse</title>
+    <meta name="description" content="An interactive, Spider-Verse inspired 3D portfolio." />
+    <meta name="theme-color" content="#07040f" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23c8102e'/%3E%3Cpath d='M18 26c4-6 10-6 12 2-6 1-10 0-12-2zm28 0c-4-6-10-6-12 2 6 1 10 0 12-2z' fill='%23fff' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bangers&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+JP:wght@700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <canvas id="webgl" aria-hidden="true"></canvas>
+
+    <div class="loader" id="loader">
+      <div class="loader__ring"><i></i><i></i><i></i></div>
+      <p class="loader__title" data-text="ENTERING THE SPIDER-VERSE">ENTERING THE SPIDER-VERSE</p>
+      <p class="loader__status" id="loader-status">Calibrating the collider…</p>
+      <div class="loader__bar"><i id="loader-bar"></i></div>
+      <div class="loader__actions" id="loader-actions">
+        <div class="enter-card">
+          <span class="enter-card__tag">Earth-1610 → ???</span>
+          <p class="enter-card__line" data-text="One portfolio. Infinite dimensions.">One portfolio. <em>Infinite dimensions.</em></p>
+          <p class="enter-card__sub">Anyone can wear the mask. Step through and see what this one built.</p>
+          <button class="btn btn--primary btn--enter" id="enter">Enter the Verse ⟶</button>
+          <span class="enter-card__hint">Best with headphones · volume is adjustable anytime</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="ui"></div>
+    <div id="scroll-track" aria-hidden="true"></div>
+
+    <noscript>This portfolio is an interactive 3D experience and needs JavaScript.</noscript>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
