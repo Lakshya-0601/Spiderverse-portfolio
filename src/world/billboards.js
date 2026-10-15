@@ -4,8 +4,10 @@ const W = 1280; // logical drawing units
 const H = 720;
 const RES = 0.8; // backing canvas is 1024x576
 const MONO = '"JetBrains Mono", monospace';
-const SANS = '"Space Grotesk", sans-serif';
 const COMIC = '"Bangers", "Space Grotesk", sans-serif';
+// royal, elegant and still easy to read: Cinzel (Roman capitals) + Cormorant Garamond (serif)
+const ROYAL = '"Cinzel", Georgia, serif';
+const SERIF = '"Cormorant Garamond", Georgia, serif';
 
 const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
@@ -33,7 +35,7 @@ function hexA(hex, a) {
 function comicTitle(g, text, x, y, size, t, accent) {
   g.font = `${size}px ${COMIC}`;
   g.textBaseline = 'alphabetic';
-  const j = Math.sin(Math.floor(t * 12) * 1.7) * 2;
+  const j = 0; // static misprint offset (a moving one read as jitter)
   g.fillStyle = 'rgba(45,226,255,0.9)';
   g.fillText(text, x - 5 + j, y + 2);
   g.fillStyle = 'rgba(255,45,111,0.9)';
@@ -120,6 +122,8 @@ export class Billboard {
     this.texture.anisotropy = 4;
     this.static = this.buildStatic();
     this.focus = 0;
+    this.focusT = 0; // when the camera last arrived (restarts the typewriter)
+    this._wasFocus = 0;
     this.onTwos = onTwos;
     this.hover = 0;
     this._acc = 1;
@@ -195,6 +199,11 @@ export class Billboard {
 
   update(t, dt) {
     // Redraw "on twos" (12fps) while in focus, 4fps otherwise.
+    if (this.focus && !this._wasFocus) {
+      this.focusT = t;
+      this._acc = 1; // redraw right away
+    }
+    this._wasFocus = this.focus;
     this._acc += dt;
     const step = this.focus || this.hover ? 1 / 12 : 1 / 4;
     const target = 0.82 + this.hover * 0.12;
@@ -238,9 +247,9 @@ export class Billboard {
     // header
     g.fillStyle = s.accent;
     g.fillRect(60, 50, 8, 120);
-    g.font = `600 26px ${MONO}`;
+    g.font = `700 24px ${ROYAL}`;
     g.fillStyle = s.accent2;
-    g.fillText(`${s.index} // ${s.kicker.toUpperCase()}`, 88, 74);
+    g.fillText(`${s.index} · ${s.kicker.toUpperCase()}`, 88, 74);
     comicTitle(g, s.title, 86, 166, 88, t, s.accent);
 
     // live indicator
@@ -297,31 +306,47 @@ export class Billboard {
     const s = this.section;
     drawSpiderMask(g, 270, 380, 130, t, s.accent2);
 
-    // typewriter headline
+    // Headline: laid out once from the full sentence so nothing reflows while it types.
+    // It types out once when the camera arrives, then holds perfectly still.
     const full = s.headline;
-    const cycle = 9;
-    const tt = t % cycle;
-    const n = Math.min(full.length, Math.floor(tt * 22));
-    g.font = `700 46px ${SANS}`;
+    g.font = `700 38px ${ROYAL}`;
+    const lines = wrap(g, full, 700);
+    const shown = this.focus ? Math.min(full.length, Math.floor((t - this.focusT) * 26)) : full.length;
     g.fillStyle = '#fff';
-    const lines = wrap(g, full.slice(0, n) + (Math.floor(t * 3) % 2 ? '▌' : ''), 700);
-    lines.forEach((l, i) => g.fillText(l, 480, 240 + i * 56));
+    let left = shown;
+    let endX = 480, endY = 240;
+    lines.forEach((l, i) => {
+      const part = l.slice(0, Math.max(0, left));
+      left -= l.length + 1;
+      const y = 240 + i * 52;
+      g.fillText(part, 480, y);
+      if (part.length) {
+        endX = 480 + g.measureText(part).width;
+        endY = y;
+      }
+    });
+    // cursor sits after the last typed letter; it never affects the layout
+    if (shown < full.length || Math.floor(t * 2) % 2) {
+      g.fillStyle = s.accent;
+      g.fillRect(endX + 6, endY - 30, 4, 36);
+    }
 
-    // facts
-    let y = 240 + lines.length * 56 + 30;
-    g.font = `500 26px ${MONO}`;
+    // facts (fixed position: based on the full headline's line count)
+    let y = 240 + lines.length * 52 + 34;
     for (const f of s.facts) {
+      g.font = `700 20px ${ROYAL}`;
       g.fillStyle = s.accent2;
-      g.fillText(`> ${f.label.toUpperCase()}`, 480, y);
+      g.fillText(f.label.toUpperCase(), 480, y);
+      g.font = `700 28px ${SERIF}`;
       g.fillStyle = '#fff';
       g.fillText(f.value, 760, y);
-      y += 40;
+      y += 42;
     }
     // skill chips (one lights up at a time)
     y += 16;
     let x = 480;
     const active = Math.floor(t * 1.5) % s.skills.length;
-    g.font = `600 24px ${SANS}`;
+    g.font = `700 25px ${SERIF}`;
     s.skills.forEach((sk, i) => {
       const w = g.measureText(sk).width + 34;
       if (x + w > W - 50) {
@@ -395,7 +420,7 @@ export class Billboard {
     g.fillStyle = '#fff';
     g.fillText(p.name.toUpperCase(), dx, 262);
     // status pill
-    g.font = `700 22px ${MONO}`;
+    g.font = `700 21px ${ROYAL}`;
     const live = /progress/i.test(p.status);
     g.fillStyle = live ? (Math.floor(t * 2) % 2 ? s.accent : 'rgba(255,178,26,0.4)') : s.accent2;
     g.beginPath();
@@ -405,7 +430,7 @@ export class Billboard {
     g.fillText(p.status.toUpperCase(), dx + 24, 300);
     // tech tags
     let tx = dx;
-    g.font = `600 22px ${SANS}`;
+    g.font = `700 24px ${SERIF}`;
     for (const tag of p.tags) {
       const w = g.measureText(tag).width + 26;
       g.strokeStyle = s.accent2;
@@ -417,9 +442,9 @@ export class Billboard {
       g.fillText(tag, tx + 13, 344);
       tx += w + 10;
     }
-    g.font = `400 25px ${SANS}`;
-    g.fillStyle = 'rgba(255,255,255,0.88)';
-    wrap(g, p.blurb, 450).slice(0, 5).forEach((l, i) => g.fillText(l, dx, 400 + i * 34));
+    g.font = `600 29px ${SERIF}`;
+    g.fillStyle = 'rgba(255,255,255,0.92)';
+    wrap(g, p.blurb, 450).slice(0, 5).forEach((l, i) => g.fillText(l, dx, 402 + i * 35));
     g.globalAlpha = 1;
 
     // pager
@@ -437,10 +462,10 @@ export class Billboard {
     const x0 = 90, x1 = 860;
     s.items.forEach((it, i) => {
       const y = 245 + i * 112;
-      g.font = `600 22px ${MONO}`;
+      g.font = `700 20px ${ROYAL}`;
       g.fillStyle = s.accent2;
       g.fillText(it.when.toUpperCase(), x0, y);
-      g.font = `700 36px ${SANS}`;
+      g.font = `700 38px ${SERIF}`;
       g.fillStyle = '#fff';
       g.fillText(it.title || it.goal, x0, y + 42);
       // bar
@@ -479,7 +504,7 @@ export class Billboard {
     g.fillStyle = '#fff';
     g.textAlign = 'center';
     g.fillText('NEXT', ax, ay + 10);
-    g.font = `italic 500 24px ${SANS}`;
+    g.font = `italic 600 28px ${SERIF}`;
     g.fillStyle = 'rgba(255,255,255,0.85)';
     wrap(g, `“${s.quote}”`, 300).forEach((l, i) => g.fillText(l, ax, ay + 70 + i * 30));
     g.textAlign = 'left';

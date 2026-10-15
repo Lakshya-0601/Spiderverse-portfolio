@@ -521,10 +521,12 @@ export function createCityScene({ renderer, mobile, sections }) {
     const skip = [rain.mesh, ...scene.children.filter((o) => o.isInstancedMesh && !traffic.meshes.includes(o))];
     const renderReflection = ground.onBeforeRender;
     ground.onBeforeRender = function (...args) {
-      const prev = skip.map((o) => o.visible);
-      skip.forEach((o) => (o.visible = false));
+      // objects can opt out later (e.g. Spider-Man) with userData.noReflect
+      const all = [...skip, ...scene.children.filter((o) => o.userData.noReflect || o.children.some((k) => k.userData.noReflect))];
+      const prev = all.map((o) => o.visible);
+      all.forEach((o) => (o.visible = false));
       renderReflection.apply(this, args);
-      skip.forEach((o, i) => (o.visible = prev[i]));
+      all.forEach((o, i) => (o.visible = prev[i]));
     };
   }
 

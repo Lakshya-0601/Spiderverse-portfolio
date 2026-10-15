@@ -40,7 +40,7 @@ src/
   core/timeline.js     scroll timings and nav stops
   scenes/portal.js     collider portal, vortex shader, tunnel, particles, shards
   scenes/city.js       city layout, wet reflective street, neon signs, towers, lightning
-  world/spiderman.js   procedural cel-shaded Spider-Man + poses
+  world/spiderman.js   procedural cel-shaded Miles Morales (Across the Spider-Verse suit) + poses
   world/billboards.js  animated canvas billboards (the "moving pictures")
   world/cars.js        instanced traffic
   world/rain.js        GPU rain

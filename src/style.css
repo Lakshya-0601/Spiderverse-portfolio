@@ -361,3 +361,24 @@ blockquote { margin-top: 20px; font-family: var(--font-comic); font-size: 26px; 
   .volume input { width: 72px; }
   .volume__val { display: none; }
 }
+
+/* ───────── Royal typography for the About / Projects / Goals panels ─────────
+   Cinzel (classical Roman capitals) for headings & labels,
+   Cormorant Garamond (an elegant, very readable serif) for the text. */
+:root {
+  --font-royal: 'Cinzel', Georgia, serif;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+}
+.panel:not(.outro) .panel__kicker { font-family: var(--font-royal); font-weight: 700; letter-spacing: 0.18em; }
+.panel:not(.outro) .panel__headline { font-family: var(--font-royal); font-weight: 700; font-size: 18px; line-height: 1.4; letter-spacing: 0.02em; }
+.panel:not(.outro) .panel__body { font-family: var(--font-serif); font-weight: 600; font-size: 19px; line-height: 1.5; opacity: 0.92; }
+.facts dt { font-family: var(--font-royal); font-weight: 700; font-size: 10px; letter-spacing: 0.16em; }
+.facts dd { font-family: var(--font-serif); font-weight: 700; font-size: 17px; }
+.chips li { font-family: var(--font-serif); font-weight: 700; font-size: 16px; }
+.project h3 { font-family: var(--font-royal); font-weight: 700; font-size: 15px; letter-spacing: 0.03em; }
+.project h3 span { font-family: var(--font-serif); font-size: 14px; font-weight: 600; letter-spacing: 0; }
+.project p { font-family: var(--font-serif); font-weight: 600; font-size: 17px; line-height: 1.45; opacity: 0.92; }
+.project__meta em { font-family: var(--font-serif); font-weight: 700; font-size: 14px; }
+.goals__when { font-family: var(--font-royal); font-weight: 700; font-size: 10px; }
+.goals strong { font-family: var(--font-royal); font-weight: 700; font-size: 15px; letter-spacing: 0.02em; }
+.goals p { font-family: var(--font-serif); font-weight: 600; font-size: 17px; line-height: 1.45; opacity: 0.92; }

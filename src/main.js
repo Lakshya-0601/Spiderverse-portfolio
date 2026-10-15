@@ -40,6 +40,10 @@ async function boot() {
       document.fonts.load('96px "Bangers"'),
       document.fonts.load('700 46px "Space Grotesk"'),
       document.fonts.load('600 26px "JetBrains Mono"'),
+      document.fonts.load('700 38px "Cinzel"'),
+      document.fonts.load('600 29px "Cormorant Garamond"'),
+      document.fonts.load('700 29px "Cormorant Garamond"'),
+      document.fonts.load('italic 600 28px "Cormorant Garamond"'),
       document.fonts.load('700 120px "Noto Sans JP"', 'スパイダー渋谷ラーメンネオン東京カラオケ居酒屋ホテル寿司ゲーム多元宇宙'),
     ]),
     new Promise((r) => setTimeout(r, 5000)),
@@ -327,12 +331,14 @@ async function boot() {
       post.bloom.radius = 0.45;
       post.sv.uniforms.uHalftone.value = 0.12;
       rig.scale.setScalar(1.35);
+      spidey.setRim(0x4cc4ff, 0.4);
     } else {
       post.bloom.strength = 0.75;
       post.bloom.threshold = 0.82;
       post.bloom.radius = 0.45;
       post.sv.uniforms.uHalftone.value = 0.22;
       rig.scale.setScalar(2.3);
+      spidey.setRim(0xff9a2e, 0.45);
     }
   }
 
