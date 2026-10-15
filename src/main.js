@@ -254,7 +254,13 @@ async function boot() {
   const screens = city.billboards.map((b) => b.bb.screen);
   canvas.addEventListener('click', () => {
     if (!state.hovered) return;
-    const i = city.billboards.findIndex((b) => b.bb === state.hovered);
+    const bb = state.hovered;
+    // focused on Projects: open the repo of the project showing on the screen
+    if (bb.section.id === 'projects' && activeSection(state.p) === 'projects' && bb.currentLink) {
+      window.open(bb.currentLink, '_blank', 'noopener');
+      return;
+    }
+    const i = city.billboards.findIndex((b) => b.bb === bb);
     const range = [T.about, T.projects, T.goals][i];
     navigate((range[0] + range[1]) / 2);
   });
@@ -322,6 +328,7 @@ async function boot() {
     // billboards only exist in the city — drop any hover state when leaving it
     if (which === 'portal' && state.hovered) {
       state.hovered = null;
+      state.hoverLabel = '';
       ui.setHover(false);
       for (const b of city.billboards) b.bb.hover = 0;
     }
@@ -463,11 +470,15 @@ async function boot() {
     raycaster.setFromCamera(state.mouse, camera);
     const hit = p > T.reveal[0] - 0.01 ? raycaster.intersectObjects(screens, false)[0] : null;
     const hb = hit ? hit.object.userData.billboard : null;
-    if (hb !== state.hovered) {
-      state.hovered = hb;
-      ui.setHover(!!hb, hb ? `${hb.section.title} ⟶` : '');
-    }
     const act = activeSection(p);
+    // on the Projects board, clicking opens the project currently on screen
+    const opensRepo = hb && hb.section.id === 'projects' && act === 'projects' && hb.currentLink;
+    const label = !hb ? '' : opensRepo ? `Open ${hb.section.items.find((it) => it.link === hb.currentLink)?.name ?? 'project'} on GitHub ↗` : `${hb.section.title} ⟶`;
+    if (hb !== state.hovered || label !== state.hoverLabel) {
+      state.hovered = hb;
+      state.hoverLabel = label;
+      ui.setHover(!!hb, label);
+    }
     for (const b of city.billboards) {
       b.bb.hover = b.bb === hb ? 1 : 0;
       b.bb.focus = act === b.section.id ? 1 : 0;

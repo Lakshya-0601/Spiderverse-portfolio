@@ -369,7 +369,7 @@ export class Billboard {
   drawProjects(g, t) {
     const s = this.section;
     const items = s.items;
-    const per = 4;
+    const per = 5.5; // seconds per project
     const idx = Math.floor(t / per) % items.length;
     const local = (t % per) / per;
     const slideIn = ease(Math.min(1, local * 4));
@@ -421,31 +421,46 @@ export class Billboard {
     g.fillText(p.name.toUpperCase(), dx, 262);
     // status pill
     g.font = `700 21px ${ROYAL}`;
-    const live = /progress/i.test(p.status);
+    const live = /progress|development/i.test(p.status);
     g.fillStyle = live ? (Math.floor(t * 2) % 2 ? s.accent : 'rgba(255,178,26,0.4)') : s.accent2;
     g.beginPath();
     g.arc(dx + 8, 292, 7, 0, Math.PI * 2);
     g.fill();
     g.fillStyle = s.accent;
     g.fillText(p.status.toUpperCase(), dx + 24, 300);
-    // tech tags
+    // tech tags (wrap onto a second row if they don't fit)
     let tx = dx;
-    g.font = `700 24px ${SERIF}`;
+    let ty = 318;
+    g.font = `700 23px ${SERIF}`;
     for (const tag of p.tags) {
       const w = g.measureText(tag).width + 26;
+      if (tx + w > dx + 470) {
+        tx = dx;
+        ty += 44;
+      }
       g.strokeStyle = s.accent2;
       g.lineWidth = 2;
       g.beginPath();
-      g.roundRect(tx, 318, w, 36, 18);
+      g.roundRect(tx, ty, w, 36, 18);
       g.stroke();
       g.fillStyle = '#fff';
-      g.fillText(tag, tx + 13, 344);
+      g.fillText(tag, tx + 13, ty + 26);
       tx += w + 10;
     }
-    g.font = `600 29px ${SERIF}`;
+    // description: smaller type for longer write-ups so it always fits
+    const top = ty + 84;
+    let fs = 29;
+    g.font = `600 ${fs}px ${SERIF}`;
+    let lines = wrap(g, p.blurb, 455);
+    while (top + (lines.length - 1) * (fs + 6) > 575 && fs > 21) {
+      fs -= 2;
+      g.font = `600 ${fs}px ${SERIF}`;
+      lines = wrap(g, p.blurb, 455);
+    }
     g.fillStyle = 'rgba(255,255,255,0.92)';
-    wrap(g, p.blurb, 450).slice(0, 5).forEach((l, i) => g.fillText(l, dx, 402 + i * 35));
+    lines.forEach((l, i) => g.fillText(l, dx, top + i * (fs + 6)));
     g.globalAlpha = 1;
+    this.currentLink = p.link; // what a click on the board opens
 
     // pager
     items.forEach((_, i) => {

@@ -42,31 +42,33 @@ export const projects = {
   kicker: 'Missions completed',
   accent: '#ffb21a',
   accent2: '#ff3c3c',
-  headline: 'My top 3 builds.',
+  headline: 'My recent 3 builds.',
+  // `link` = the project's GitHub repository (clicking a project opens it)
   items: [
+    {
+      name: 'Envelope',
+      status: 'In development',
+      tags: ['TypeScript', 'Machine Learning', 'Sustainability'],
+      blurb:
+        'Being built by me and 3 friends: ML models that give construction agencies a report on how much heat and greenhouse gas is released into the environment during the construction phase.',
+      link: 'https://github.com/Lakshya-0601/Envelope',
+    },
     {
       name: 'Frill & Flair',
       status: 'In progress',
       tags: ['HTML', 'CSS', 'JavaScript'],
       blurb: "A landing page for my mother's boutique of handcrafted sarees, suits and lehengas, with an elegant, animated multi-page design.",
-      link: '#',
-    },
-    {
-      name: 'Facebook Clone',
-      status: 'Completed',
-      tags: ['Next.js', 'NextAuth', 'Firebase'],
-      blurb: 'A Facebook-style social feed with secure sign-in through NextAuth and posts stored in real time with Firebase.',
-      link: '#',
+      link: 'https://github.com/Lakshya-0601/Frill-and-Flair',
     },
     {
       name: 'Simon Game',
       status: 'Completed',
       tags: ['HTML', 'CSS', 'JavaScript'],
       blurb: 'The classic memory game: follow a growing sequence of colours and sounds, with levels that get harder each round.',
-      link: '#',
+      link: 'https://github.com/Lakshya-0601/Simon-Memory-Game',
     },
   ],
-  ticker: 'CASE FILES ✦ MISSIONS LOGGED ✦ CLICK THE BILLBOARD FOR DETAILS ✦ ',
+  ticker: 'CASE FILES ✦ MISSIONS LOGGED ✦ CLICK A PROJECT TO OPEN IT ON GITHUB ✦ ',
 };
 
 export const goals = {

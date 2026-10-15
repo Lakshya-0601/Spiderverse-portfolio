@@ -28,16 +28,18 @@ function projectsHTML() {
     <ol class="projects">${projects.items
       .map(
         (p, i) => `
-      <li class="project">
-        <div class="project__num">${String(i + 1).padStart(2, '0')}</div>
-        <div>
-          <h3>${esc(p.name)} <span class="${/progress/i.test(p.status) ? 'is-live' : ''}">${esc(p.status)}</span></h3>
-          <p>${esc(p.blurb)}</p>
-          <div class="project__meta">
-            ${p.tags.map((t) => `<em>${esc(t)}</em>`).join('')}
-            ${p.link && p.link !== '#' ? `<a href="${esc(p.link)}" target="_blank" rel="noopener">View ↗</a>` : ''}
+      <li>
+        <a class="project" href="${esc(p.link)}" target="_blank" rel="noopener" aria-label="${esc(p.name)} — open on GitHub">
+          <div class="project__num">${String(i + 1).padStart(2, '0')}</div>
+          <div>
+            <h3>${esc(p.name)} <span class="${/progress|development/i.test(p.status) ? 'is-live' : ''}">${esc(p.status)}</span></h3>
+            <p>${esc(p.blurb)}</p>
+            <div class="project__meta">
+              ${p.tags.map((t) => `<em>${esc(t)}</em>`).join('')}
+              <span class="project__gh">GitHub ↗</span>
+            </div>
           </div>
-        </div>
+        </a>
       </li>`
       )
       .join('')}</ol>`;
