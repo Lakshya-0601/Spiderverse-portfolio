@@ -10,7 +10,7 @@ export const profile = {
   role: 'Web Developer · Designer · Web-Slinger',
   tagline: 'Building interactive web experiences, one thwip at a time.',
   earth: 'EARTH-1610',
-  city: 'NEO-SHIBUYA',
+  city: 'NEW YORK',
   cityEarth: 'EARTH-928B',
 };
 
