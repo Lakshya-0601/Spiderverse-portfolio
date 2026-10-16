@@ -1,8 +1,8 @@
 # Into the Portfolio-Verse
 
-An interactive 3D portfolio inspired by *The Amazing Spider-Man* and *Spider-Man: Across the Spider-Verse*, built with Three.js and Vite. Everything (Spider-Man, the portal, the city, cars, rain and all the sound) is generated in code, so there are no 3D model or audio files.
+An interactive 3D portfolio inspired by *The Amazing Spider-Man* and *Spider-Man: Across the Spider-Verse*, built with Three.js and Vite. Everything visual (Spider-Man, the portal, the city, cars, rain) and the ambient sound are generated in code, so there are no 3D model or audio files.
 
-**Sound:** soft rain and a warm portal pad, all synthesised. Clicking "Enter the Verse" fades it in gently; the slider in the top-right sets the volume anywhere on the site.
+**Sound:** "Sunflower" (Post Malone, Swae Lee) plays from the official YouTube video through YouTube's embedded player, shown in a small "Now playing" card as YouTube requires. The song file is not hosted here. Underneath it is a soft, synthesised rain bed; if the video can't load, the full synthesised ambience plays instead. The sound button and slider (top-right) control everything, anywhere on the site.
 
 ## Run it
 
@@ -46,6 +46,7 @@ src/
   world/rain.js        GPU rain
   ui/ui.js             HUD, nav, glass panels, comic SFX, cursor web-splats
   ui/audio.js          synthesised rain, portal pad, thunder and thwip / whoosh / impact effects
+  ui/music.js          the song, via the official YouTube embed (Now playing card)
 ```
 
 Performance: the renderer lowers its resolution automatically if the frame rate drops, and phones get fewer buildings, rain drops and cars, with no planar reflection.

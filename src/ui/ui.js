@@ -1,6 +1,7 @@
 import gsap from 'gsap';
 import { profile, about, projects, goals, contact } from '../content.js';
 import { STOPS, activeSection } from '../core/timeline.js';
+import { Music, SONG } from './music.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -128,6 +129,15 @@ export class UI {
         <button class="outro__back" id="back-top">⟲ Back through the portal</button>
       </section>
 
+      <aside class="now-playing" id="now-playing" aria-label="Now playing">
+        <div class="now-playing__head">
+          <span class="now-playing__eq" aria-hidden="true"><i></i><i></i><i></i></span>
+          <div class="now-playing__meta"><strong>${esc(SONG.title)}</strong><span>${esc(SONG.artist)}</span></div>
+          <button class="now-playing__btn" id="np-collapse" aria-label="Pause and minimise the player">–</button>
+        </div>
+        <div class="now-playing__frame"><div class="now-playing__player"></div></div>
+        <button class="now-playing__pill" id="np-expand" aria-label="Play ${esc(SONG.title)}">♪ ${esc(SONG.title)} <span>▸</span></button>
+      </aside>
       <div class="sfx" id="sfx" aria-hidden="true"></div>
       <div class="flash" id="flash"></div>
       <div class="speedlines" id="speedlines"></div>
@@ -166,6 +176,17 @@ export class UI {
       txt.textContent = status === 'on' ? 'Sound on' : 'Sound off';
     };
     btn.addEventListener('click', () => this.audio.toggle());
+
+    // The song (official YouTube embed) — controlled by the same button and slider.
+    this.music = new Music($('#now-playing'));
+    // phones: start as the small pill (mobile browsers block autoplay; one tap plays it)
+    if (window.matchMedia('(max-width: 760px)').matches) {
+      this.music.collapsed = true;
+      $('#now-playing').classList.add('collapsed');
+    }
+    this.audio.attachMusic(this.music);
+    $('#np-collapse').addEventListener('click', () => this.music.collapse());
+    $('#np-expand').addEventListener('click', () => this.music.expand());
 
     // Volume slider — always in the HUD, so the level can be changed anywhere on the site.
     const vol = $('#volume');
@@ -219,7 +240,7 @@ export class UI {
       this.el.tip.style.transform = `translate(${e.clientX + 18}px, ${e.clientY + 18}px)`;
     });
     window.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('a, button, .panel, .sound-ctl')) return;
+      if (e.target.closest('a, button, .panel, .sound-ctl, .now-playing')) return;
       this.webSplat(e.clientX, e.clientY);
     });
   }

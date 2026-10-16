@@ -384,3 +384,51 @@ blockquote { margin-top: 20px; font-family: var(--font-comic); font-size: 26px; 
 .goals__when { font-family: var(--font-royal); font-weight: 700; font-size: 10px; }
 .goals strong { font-family: var(--font-royal); font-weight: 700; font-size: 15px; letter-spacing: 0.02em; }
 .goals p { font-family: var(--font-serif); font-weight: 600; font-size: 17px; line-height: 1.45; opacity: 0.92; }
+
+/* ───────── Now playing: the official YouTube player for the song ─────────
+   YouTube requires a playing embed to stay visible and at least 200×200. */
+#ui .now-playing { pointer-events: auto; }
+.now-playing {
+  position: absolute; right: clamp(16px, 2vw, 28px); bottom: 22px; z-index: 3;
+  width: 240px; padding: 8px;
+  background:
+    radial-gradient(rgba(255, 45, 111, 0.18) 1px, transparent 1.4px) 0 0 / 7px 7px,
+    var(--glass);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border: 2px solid var(--paper);
+  box-shadow: 6px 6px 0 var(--pink), -2px -2px 0 var(--cyan);
+  opacity: 0; visibility: hidden; transform: translateY(24px) rotate(-1deg);
+  transition: opacity 0.4s, transform 0.5s cubic-bezier(.2,.9,.3,1.3), visibility 0.4s;
+}
+.now-playing.show { opacity: 1; visibility: visible; transform: rotate(-1deg); }
+.in-city .now-playing { right: auto; left: clamp(16px, 2vw, 28px); }
+.now-playing__head { display: flex; align-items: center; gap: 10px; padding: 0 2px 8px; }
+.now-playing__meta { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.now-playing__meta strong { font-family: var(--font-comic); font-weight: 400; font-size: 21px; letter-spacing: 0.05em; line-height: 1; color: var(--yellow); text-shadow: 2px 2px 0 var(--red); }
+.now-playing__meta span { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.now-playing__eq { display: flex; gap: 3px; align-items: flex-end; height: 16px; }
+.now-playing__eq i { width: 3px; height: 5px; background: var(--yellow); animation: eq 0.6s steps(3) infinite alternate; }
+.now-playing__eq i:nth-child(2) { animation-delay: 0.2s; }
+.now-playing__eq i:nth-child(3) { animation-delay: 0.4s; }
+.now-playing__btn { width: 26px; height: 26px; flex: none; border: 1px solid var(--glass-edge); background: rgba(0,0,0,0.3); font-size: 18px; line-height: 1; transition: 0.2s; }
+.now-playing__btn:hover { border-color: var(--yellow); color: var(--yellow); }
+.now-playing__frame { width: 224px; height: 200px; background: #000; border: 2px solid var(--ink); }
+.now-playing__frame iframe, .now-playing__player { display: block; width: 100%; height: 100%; border: 0; }
+.now-playing__pill {
+  display: none; align-items: center; gap: 8px;
+  font-family: var(--font-comic); font-size: 18px; letter-spacing: 0.06em;
+  padding: 8px 14px; background: var(--yellow); color: var(--ink);
+  border: 2px solid var(--ink); box-shadow: 4px 4px 0 var(--red);
+}
+.now-playing__pill:hover { transform: translate(-1px, -1px); box-shadow: 6px 6px 0 var(--cyan); }
+/* collapsed: song paused, only the pill shows */
+.now-playing.collapsed { width: auto; padding: 0; background: none; border: 0; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.now-playing.collapsed .now-playing__head, .now-playing.collapsed .now-playing__frame { display: none; }
+.now-playing.collapsed .now-playing__pill { display: inline-flex; }
+/* keep the city title card clear of an open player */
+#ui:has(.now-playing.show:not(.collapsed)) .city-title { left: calc(clamp(16px, 2vw, 28px) + 280px); }
+
+@media (max-width: 760px) {
+  .now-playing, .in-city .now-playing { top: 64px; bottom: auto; right: 12px; left: auto; }
+  #ui:has(.now-playing.show:not(.collapsed)) .city-title { left: clamp(16px, 6vw, 96px); }
+}
