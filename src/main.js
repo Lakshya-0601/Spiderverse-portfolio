@@ -281,11 +281,10 @@ async function boot() {
     const land = fallCam(1, PERCH, { pos: V(), target: V() });
     const focus = (i) => {
       const b = city.billboards[i];
-      // wide screens: board sits between the music card (bottom-left) and the glass panel (right)
-      const dist = wide ? 46 : 72;
-      const shift = wide ? 9 : 0;
+      const dist = wide ? 41 : 72;
+      const shift = wide ? 11.5 : 0;
       // portrait: aim below the board so it sits in the top half, above the bottom sheet
-      const target = b.center.clone().addScaledVector(b.right, shift).add(V(0, wide ? -3 : -21, 0));
+      const target = b.center.clone().addScaledVector(b.right, shift).add(V(0, wide ? 0 : -21, 0));
       const pos = b.center.clone().addScaledVector(b.normal, dist).addScaledVector(b.right, shift).add(V(0, 3, 0));
       return { pos, target };
     };

@@ -1,7 +1,4 @@
-// Soundscape: the song (streamed via YouTube, see music.js) plus a fully
-// synthesised, deliberately soft ambience (no audio files). While the song
-// plays, the ambience drops to a quiet bed of rain; if the song can't load,
-// the full ambience below plays instead:
+// Fully synthesised, deliberately soft soundscape (no audio files):
 //  • portal  – a warm, slowly breathing chord pad with a faint shimmer
 //  • city    – gentle rain (soft pink noise, no harsh hiss), a quiet pad,
 //              and the occasional distant roll of thunder
@@ -17,21 +14,6 @@ export class AudioFX {
     this.onStatus = null; // (status: 'on' | 'off') => void
     this._city = 0;
     this._warp = 0;
-    this.music = null;
-  }
-
-  // Connect the YouTube song so the sound button and slider control it too.
-  attachMusic(music) {
-    this.music = music;
-    music.onState = (state) => {
-      // song unavailable or collapsed → bring the full ambience back (and vice versa)
-      this._applyMix(false);
-      this.onMusic?.(state);
-    };
-  }
-
-  get songPlaying() {
-    return !!this.music && this.music.active && this.enabled;
   }
 
   _init() {
@@ -147,11 +129,6 @@ export class AudioFX {
     this.master.gain.cancelScheduledValues(t);
     // gentle 1.5s fade in, quicker fade out
     this.master.gain.setTargetAtTime(this.enabled ? this.volume : 0, t, this.enabled ? 0.5 : 0.15);
-    if (this.music) {
-      if (this.enabled) this.music.show();
-      else this.music.hide();
-    }
-    this._applyMix(false);
     this.onStatus?.(this.enabled ? 'on' : 'off');
     return this.enabled;
   }
@@ -159,12 +136,10 @@ export class AudioFX {
   setVolume(v) {
     this.volume = v * v; // squared curve feels even to the ear
     if (this.ctx && this.enabled) this.master.gain.setTargetAtTime(this.volume, this.ctx.currentTime, 0.05);
-    this.music?.setVolume(v * 80); // YouTube volume 0..100; 100% slider = 80
   }
 
   // city: 0 = portal dimension, 1 = city. warp: 0..1 while diving through the portal.
   setMix(city, warp = 0) {
-    this.music?.setDuck(1 - Math.min(1, warp * 1.3) * 0.55); // dip the song while diving through the portal
     if (city === this._city && Math.abs(warp - this._warp) < 0.02) return;
     this._city = city;
     this._warp = warp;
@@ -176,14 +151,11 @@ export class AudioFX {
     const t = this.ctx.currentTime;
     const k = immediate ? 0.01 : 0.6;
     const c = this._city, w = this._warp;
-    // with the song playing, the pads step aside and the rain becomes a quiet bed
-    const bed = this.songPlaying ? 0 : 1;
-    const rain = this.songPlaying ? 0.35 : 1;
-    this.portalPad.out.gain.setTargetAtTime(bed * (1 - c) * (0.85 + w * 0.35), t, k);
+    this.portalPad.out.gain.setTargetAtTime((1 - c) * (0.85 + w * 0.35), t, k);
     this.portalPad.lp.frequency.setTargetAtTime(900 + w * 1800, t, 0.3); // the pad opens up as you dive in
-    this.shimmer.gain.setTargetAtTime(bed * (1 - c) * (0.02 + w * 0.03), t, k);
-    this.cityPad.out.gain.setTargetAtTime(bed * c * 0.45, t, k * 2);
-    this.rain.gain.setTargetAtTime(rain * c * 1.3, t, k * 2);
+    this.shimmer.gain.setTargetAtTime((1 - c) * (0.02 + w * 0.03), t, k);
+    this.cityPad.out.gain.setTargetAtTime(c * 0.45, t, k * 2);
+    this.rain.gain.setTargetAtTime(c * 1.3, t, k * 2);
   }
 
   // a soft, distant rumble every so often while in the city
