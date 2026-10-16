@@ -43,7 +43,8 @@ export const projects = {
   accent: '#ffb21a',
   accent2: '#ff3c3c',
   headline: 'My recent 3 builds.',
-  // `link` = the project's GitHub repository (clicking a project opens it)
+  // `repo` = GitHub repository ("View GitHub"); `site` = live website ("Visit site").
+  // Leave `site` out until a project is deployed and only the GitHub button shows.
   items: [
     {
       name: 'Envelope',
@@ -51,24 +52,26 @@ export const projects = {
       tags: ['TypeScript', 'Machine Learning', 'Sustainability'],
       blurb:
         'Being built by me and 3 friends: ML models that give construction agencies a report on how much heat and greenhouse gas is released into the environment during the construction phase.',
-      link: 'https://github.com/Lakshya-0601/Envelope',
+      repo: 'https://github.com/Lakshya-0601/Envelope',
     },
     {
       name: 'Frill & Flair',
       status: 'In progress',
       tags: ['HTML', 'CSS', 'JavaScript'],
       blurb: "A landing page for my mother's boutique of handcrafted sarees, suits and lehengas, with an elegant, animated multi-page design.",
-      link: 'https://github.com/Lakshya-0601/Frill-and-Flair',
+      repo: 'https://github.com/Lakshya-0601/Frill-and-Flair',
     },
     {
-      name: 'Simon Game',
-      status: 'Completed',
-      tags: ['HTML', 'CSS', 'JavaScript'],
-      blurb: 'The classic memory game: follow a growing sequence of colours and sounds, with levels that get harder each round.',
-      link: 'https://github.com/Lakshya-0601/Simon-Memory-Game',
+      name: 'ReelRoom',
+      status: 'Live',
+      tags: ['Next.js', 'Firebase', 'WebSockets', 'Chrome extension'],
+      blurb:
+        'Movie night with friends, even when you are apart: watch Netflix, JioHotstar and Prime Video in perfect sync, with shared play, pause and seek plus live chat and emoji reactions.',
+      repo: 'https://github.com/Lakshya-0601/watch-party',
+      site: 'https://reelroom-vz4n.onrender.com',
     },
   ],
-  ticker: 'CASE FILES ✦ MISSIONS LOGGED ✦ CLICK A PROJECT TO OPEN IT ON GITHUB ✦ ',
+  ticker: 'CASE FILES ✦ MISSIONS LOGGED ✦ VISIT THE SITE OR VIEW THE CODE ON GITHUB ✦ ',
 };
 
 export const goals = {

@@ -29,17 +29,18 @@ function projectsHTML() {
       .map(
         (p, i) => `
       <li>
-        <a class="project" href="${esc(p.link)}" target="_blank" rel="noopener" aria-label="${esc(p.name)} — open on GitHub">
+        <div class="project">
           <div class="project__num">${String(i + 1).padStart(2, '0')}</div>
           <div>
-            <h3>${esc(p.name)} <span class="${/progress|development/i.test(p.status) ? 'is-live' : ''}">${esc(p.status)}</span></h3>
+            <h3>${esc(p.name)} <span class="${/progress|development|live/i.test(p.status) ? 'is-live' : ''}">${esc(p.status)}</span></h3>
             <p>${esc(p.blurb)}</p>
-            <div class="project__meta">
-              ${p.tags.map((t) => `<em>${esc(t)}</em>`).join('')}
-              <span class="project__gh">GitHub ↗</span>
+            <div class="project__meta">${p.tags.map((t) => `<em>${esc(t)}</em>`).join('')}</div>
+            <div class="project__links">
+              ${p.site ? `<a class="project__btn project__btn--site" href="${esc(p.site)}" target="_blank" rel="noopener" aria-label="Visit the ${esc(p.name)} website">Visit site ↗</a>` : ''}
+              ${p.repo ? `<a class="project__btn" href="${esc(p.repo)}" target="_blank" rel="noopener" aria-label="View ${esc(p.name)} on GitHub">View GitHub ↗</a>` : ''}
             </div>
           </div>
-        </a>
+        </div>
       </li>`
       )
       .join('')}</ol>`;

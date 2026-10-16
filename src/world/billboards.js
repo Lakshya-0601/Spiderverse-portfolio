@@ -421,7 +421,7 @@ export class Billboard {
     g.fillText(p.name.toUpperCase(), dx, 262);
     // status pill
     g.font = `700 21px ${ROYAL}`;
-    const live = /progress|development/i.test(p.status);
+    const live = /progress|development|live/i.test(p.status);
     g.fillStyle = live ? (Math.floor(t * 2) % 2 ? s.accent : 'rgba(255,178,26,0.4)') : s.accent2;
     g.beginPath();
     g.arc(dx + 8, 292, 7, 0, Math.PI * 2);
@@ -460,7 +460,7 @@ export class Billboard {
     g.fillStyle = 'rgba(255,255,255,0.92)';
     lines.forEach((l, i) => g.fillText(l, dx, top + i * (fs + 6)));
     g.globalAlpha = 1;
-    this.currentLink = p.link; // what a click on the board opens
+    this.currentProject = p; // a click on the board opens its site (or GitHub if not deployed)
 
     // pager
     items.forEach((_, i) => {

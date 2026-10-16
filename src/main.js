@@ -256,8 +256,9 @@ async function boot() {
     if (!state.hovered) return;
     const bb = state.hovered;
     // focused on Projects: open the repo of the project showing on the screen
-    if (bb.section.id === 'projects' && activeSection(state.p) === 'projects' && bb.currentLink) {
-      window.open(bb.currentLink, '_blank', 'noopener');
+    const proj = bb.section.id === 'projects' && activeSection(state.p) === 'projects' && bb.currentProject;
+    if (proj) {
+      window.open(proj.site || proj.repo, '_blank', 'noopener');
       return;
     }
     const i = city.billboards.findIndex((b) => b.bb === bb);
@@ -472,8 +473,8 @@ async function boot() {
     const hb = hit ? hit.object.userData.billboard : null;
     const act = activeSection(p);
     // on the Projects board, clicking opens the project currently on screen
-    const opensRepo = hb && hb.section.id === 'projects' && act === 'projects' && hb.currentLink;
-    const label = !hb ? '' : opensRepo ? `Open ${hb.section.items.find((it) => it.link === hb.currentLink)?.name ?? 'project'} on GitHub ↗` : `${hb.section.title} ⟶`;
+    const proj = hb && hb.section.id === 'projects' && act === 'projects' && hb.currentProject;
+    const label = !hb ? '' : proj ? (proj.site ? `Visit ${proj.name} ↗` : `View ${proj.name} on GitHub ↗`) : `${hb.section.title} ⟶`;
     if (hb !== state.hovered || label !== state.hoverLabel) {
       state.hovered = hb;
       state.hoverLabel = label;
