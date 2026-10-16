@@ -138,7 +138,14 @@ a { color: inherit; }
 .volume__icon { width: 18px; height: 18px; flex: none; }
 .volume__icon path { fill: none; stroke: var(--paper); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: opacity 0.2s; }
 .volume__icon path:first-child { fill: var(--paper); }
-.volume[data-level='low'] .volume__w2, .volume[data-level='mute'] .volume__w1, .volume[data-level='mute'] .volume__w2 { opacity: 0.15; }
+.volume[data-level='low'] .volume__w2 { opacity: 0.15; }
+.volume[data-level='mute'] .volume__w1, .volume[data-level='mute'] .volume__w2 { opacity: 0; }
+.volume__x { opacity: 0; stroke: var(--pink) !important; }
+.volume[data-level='mute'] .volume__x { opacity: 1; }
+.volume__mute { display: grid; place-items: center; width: 28px; height: 28px; margin: -5px -4px -5px -8px; border-radius: 50%; transition: background 0.2s, transform 0.15s; }
+.volume__mute:hover { background: rgba(255, 255, 255, 0.12); }
+.volume__mute:active { transform: scale(0.88); }
+.volume__mute:focus-visible { outline: 2px solid var(--yellow); outline-offset: 1px; }
 .volume__val { font-family: var(--font-mono); font-size: 11px; width: 3ch; text-align: right; opacity: 0.8; }
 .volume input {
   -webkit-appearance: none; appearance: none; cursor: pointer;

@@ -83,12 +83,13 @@ export class UI {
         <div class="dimension" aria-live="polite"><i></i><span id="dim-label">${esc(profile.earth)}</span></div>
         <div class="sound-ctl">
           <button class="sound" id="sound" aria-pressed="false"><span class="sound__bars"><i></i><i></i><i></i><i></i></span><span class="sound__txt">Sound off</span></button>
-          <label class="volume" title="Volume">
-            <span class="sr-only">Volume</span>
-            <svg class="volume__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="volume__w1" d="M16 9.5a3.5 3.5 0 0 1 0 5"/><path class="volume__w2" d="M18.5 7a7 7 0 0 1 0 10"/></svg>
+          <div class="volume">
+            <button class="volume__mute" id="mute" type="button" aria-label="Mute" aria-pressed="false" title="Mute">
+              <svg class="volume__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="volume__w1" d="M16 9.5a3.5 3.5 0 0 1 0 5"/><path class="volume__w2" d="M18.5 7a7 7 0 0 1 0 10"/><path class="volume__x" d="M16.5 9.5l5 5m0-5l-5 5"/></svg>
+            </button>
             <input type="range" id="volume" min="0" max="100" step="1" value="50" aria-label="Volume" />
             <output class="volume__val" for="volume">50</output>
-          </label>
+          </div>
         </div>
       </header>
 
@@ -176,7 +177,13 @@ export class UI {
       const v = parseInt(localStorage.getItem('sv-ambient-volume'), 10);
       if (!Number.isNaN(v)) saved = Math.min(100, Math.max(0, v));
     } catch {}
+    const muteBtn = $('#mute');
+    let lastLevel = saved > 0 ? saved : 50; // the level to restore when un-muting
     const setVol = (v, persist) => {
+      if (v > 0) lastLevel = v;
+      muteBtn.setAttribute('aria-pressed', v === 0);
+      muteBtn.setAttribute('aria-label', v === 0 ? 'Unmute' : 'Mute');
+      muteBtn.title = v === 0 ? 'Unmute' : 'Mute';
       vol.value = v;
       volOut.textContent = v;
       volBox.style.setProperty('--v', `${v}%`);
@@ -188,6 +195,8 @@ export class UI {
     };
     setVol(saved, false);
     vol.addEventListener('input', () => setVol(+vol.value, true));
+    // speaker icon: mute, then click again to restore the previous level
+    muteBtn.addEventListener('click', () => setVol(+vol.value > 0 ? 0 : lastLevel, true));
     // the page scroll listens for wheel events; keep wheel-on-slider from scrolling the story
     vol.addEventListener('wheel', (e) => {
       e.preventDefault();
